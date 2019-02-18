@@ -1,29 +1,42 @@
-# ____________________________________ * MySQL * sakila Database Analysis * ____________________________________#
+# _________________________________ * MySQL * sakila Database Analysis * __________________________________#
 USE sakila;
--- ----------------------------------
-### 1 ###______________________________________________________________________________________________________
+#__________________________________________________*-1-*___________________________________________________
+
+#___#1#____________________________________________________________________________________________________
+ -- -------------------------------------------------------------------------------------------------------
   -- a. Display the first and last names of all actors from the table `actor`.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	first_name, 
     last_name
 FROM actor;
 
+ -- -------------------------------------------------------------------------------------------------------
   -- b. Display the first & last name of each actor using all upper case in a single column titled `Actor Name`.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	UPPER(CONCAT(first_name, ' ', last_name)) AS 'Actor Name' 
 FROM actor;
  
--- ----------------------------------
-### 2 ###______________________________________________________________________________________________________
-  -- a. Given an actor's 1st name, How would you query their ID number, last name, (and first name)?
+#__________________________________________________*-2-*___________________________________________________
+#___#2#____________________________________________________________________________________________________
+ -- -------------------------------------------------------------------------------------------------------
+  -- a. Given an actor's 1st name ('Joe'), How would you query their ID number, last name, (and first name)?
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	actor_id, 
     first_name, 
     last_name
 FROM actor
-WHERE first_name='query_this_1st_name';
+WHERE first_name='Joe';
 
+ -- -------------------------------------------------------------------------------------------------------
   -- b. Find all actors whose last name contains the letters `GEN`.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	actor_id, 
     first_name, 
@@ -32,7 +45,10 @@ FROM actor
 WHERE 
 	last_name LIKE '%GEN%';
 
+ -- -------------------------------------------------------------------------------------------------------
   -- c. Find all actors whose last name contains letters `LI`, & order the rows by last name then first name.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	actor_id, 
     first_name, 
@@ -42,31 +58,42 @@ WHERE
 	last_name LIKE '%LI%'
 ORDER BY last_name, first_name;
   
+ -- -------------------------------------------------------------------------------------------------------
   -- d. Using `IN`, display `country_id` & `country` of the following: Afghanistan, Bangladesh, & China.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	country_id AS 'ID', 
     country AS 'Country'
 FROM country
 WHERE country IN ('Afghanistan', 'Bangladesh', 'China');
 
--- ----------------------------------
-### 3 ###______________________________________________________________________________________________________
+#__________________________________________________*-3-*___________________________________________________
+#___#3#____________________________________________________________________________________________________
+ -- -------------------------------------------------------------------------------------------------------
   -- a. For a place to store actor descriptions, create `actor`.`description` and use the data type `BLOB`.
 		-- (Make sure to research the type `BLOB`, as the difference between it and `VARCHAR` are significant).
+ -- -------------------------------------------------------------------------------------------------------
+
 -- TEXT and BLOB data types are stored off the table with a designated pointer to the contents.  
 -- VARCHAR data elements are strings which are stored within the table.
 
 ALTER TABLE actor
 ADD COLUMN description BLOB FIRST;
         
+ -- -------------------------------------------------------------------------------------------------------
   -- b. Delete the `description` column.
+ -- -------------------------------------------------------------------------------------------------------
 
 ALTER TABLE actor
 DROP COLUMN description;
 
--- ----------------------------------
-### 4 ###______________________________________________________________________________________________________
+#__________________________________________________*-4-*___________________________________________________
+#___#4#____________________________________________________________________________________________________
+ -- -------------------------------------------------------------------------------------------------------
   -- a. List the last names of actors, as well as the number of records sharing that last name.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	last_name AS 'Last Name', 
     COUNT(last_name) AS 'Count' 
@@ -74,7 +101,10 @@ FROM actor
 GROUP BY last_name 
 ORDER BY COUNT(last_name) DESC;
 
+ -- -------------------------------------------------------------------------------------------------------
   -- b. List last names of actors, & the number of records sharing that last name, only for shared names.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	last_name AS 'Last Name', 
     COUNT(last_name) AS 'Count' 
@@ -83,26 +113,38 @@ GROUP BY last_name
 HAVING Count > 1
 ORDER BY Count ASC;
   
+ -- -------------------------------------------------------------------------------------------------------
   -- c. Write a Corrective Query to Change actor `GROUCHO WILLIAMS` to `HARPO WILLIAMS`.
+ -- -------------------------------------------------------------------------------------------------------
+
+SELECT * FROM actor WHERE first_name='GROUCHO'; -- test statement; 
+
 UPDATE actor
 SET first_name = 'HARPO'
 WHERE first_name = 'GROUCHO' AND last_name='WILLIAMS';
 
-SELECT * FROM actor WHERE first_name='GROUCHO'; -- test statement; 
-
+ -- -------------------------------------------------------------------------------------------------------
   -- d. Change it back: If the first name of the actor is currently `HARPO`, change it to `GROUCHO`.
+ -- -------------------------------------------------------------------------------------------------------
+
 UPDATE actor
 SET first_name = 'GROUCHO'
 WHERE first_name = 'HARPO' AND last_name='Williams'
 LIMIT 1;
 
--- ----------------------------------
-### 5 ###______________________________________________________________________________________________________
+SELECT * FROM actor WHERE first_name='GROUCHO'AND last_name='WILLIAMS'; -- test statement;
+
+#__________________________________________________*-5-*___________________________________________________
+#___#5#____________________________________________________________________________________________________
+ -- -------------------------------------------------------------------------------------------------------
   -- a. You cannot locate the schema of the `address` table. Which query would you use to re-create it?
+ -- -------------------------------------------------------------------------------------------------------
+ 
 -- To recreate a table's schema, you could:
 -- (i) run the script on the following line,   
-  SHOW CREATE TABLE sakila.address;
--- (ii) or right-click on sakila.address -> 'Copy to Clipboard' -> 'Create Statement'  
+   SHOW CREATE TABLE sakila.address;
+-- (ii) or right-click on sakila.address -> 'Copy to Clipboard' -> 'Create Statement'  (pasted below)
+
   CREATE TABLE `address` (
   `address_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `address` varchar(50) NOT NULL,
@@ -116,18 +158,25 @@ LIMIT 1;
   PRIMARY KEY (`address_id`),
   KEY `idx_fk_city_id` (`city_id`),
   SPATIAL KEY `idx_location` (`location`),
-  CONSTRAINT `fk_address_city` FOREIGN KEY (`city_id`) REFERENCES `city` (`city_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=606 DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_address_city` 
+  FOREIGN KEY (`city_id`) REFERENCES `city` (`city_id`) ON UPDATE CASCADE) 
+	ENGINE=InnoDB AUTO_INCREMENT=606 DEFAULT CHARSET=utf8;
 
--- ----------------------------------
-### 6 ###______________________________________________________________________________________________________
+#__________________________________________________*-6-*___________________________________________________
+#___#6#____________________________________________________________________________________________________
+ -- -------------------------------------------------------------------------------------------------------
   -- a. Use `JOIN` to display the first and last names, as well as the address, of each staff member.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT first_name, last_name, address 
 FROM staff
 INNER JOIN address 
 USING(address_id);
 
+ -- -------------------------------------------------------------------------------------------------------
   -- b. Use `JOIN` to display total staff member sales in August 2005. Use tables `staff` & `payment`.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
     S.staff_id AS 'ID#', 
 	CONCAT(S.first_name, ' ', S.last_name) AS 'Staff Member',
@@ -138,7 +187,10 @@ ON S.staff_id = P.staff_id
 WHERE payment_date LIKE '%2005-08%'
 GROUP BY S.staff_id; 
 
+ -- -------------------------------------------------------------------------------------------------------
   -- c. List each film & number of actors listed for it. Use INNER JOIN on tables `film_actor` & `film`.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT
 	title AS 'Film',
     COUNT(actor_id) AS '# of Actors'
@@ -147,7 +199,10 @@ INNER JOIN film_actor A
 ON F.film_id=A.film_id
 GROUP BY title;
 
+ -- -------------------------------------------------------------------------------------------------------
   -- d. How many copies of the film `Hunchback Impossible` exist in the inventory system?
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	I.film_id AS 'ID#', 
     F.title AS 'Film Title',
@@ -158,7 +213,10 @@ USING(film_id)
 GROUP BY I.film_id
 HAVING F.title = 'Hunchback Impossible';
 
+ -- -------------------------------------------------------------------------------------------------------
   -- e. JOIN tables `payment` & `customer` & list total paid per customer, sorting last name alphabetically.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	C.customer_id AS 'Customer ID#', 
     C.last_name AS 'Last Name', 
@@ -169,9 +227,12 @@ USING(customer_id)
 GROUP BY customer_id
 ORDER BY last_name ASC;
 
--- ----------------------------------
-### 7 ###______________________________________________________________________________________________________
+#__________________________________________________*-7-*___________________________________________________
+#___#7#____________________________________________________________________________________________________
+ -- -------------------------------------------------------------------------------------------------------
   -- a. Use subqueries to display titles of movies starting w/ letters `K` & `Q` whose language is English.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT title AS 'Film Title'
 FROM film F
 WHERE
@@ -183,7 +244,10 @@ language_id IN
 	)
 AND title LIKE 'Q%' OR title LIKE "K%"; 
 
+ -- -------------------------------------------------------------------------------------------------------
   -- b. Use subqueries to display all actors who appear in the film `Alone Trip`.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	actor_id AS 'ID#', 
     CONCAT(first_name, ' ', last_name) AS 'Actor'
@@ -199,8 +263,11 @@ WHERE actor_id IN
 		WHERE title = "Alone Trip"
 		)
 	);
-    
+
+ -- -------------------------------------------------------------------------------------------------------
   -- c. Retrieve names & email addresses of all Canadian customers using JOINs.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	CONCAT(first_name, ' ', last_name) AS 'Customer Name', 
     email AS 'email address'
@@ -213,7 +280,10 @@ JOIN country
 	USING(country_id)
 WHERE country = "Canada";
 
-  -- d. Query all films in the category _family_.
+ -- -------------------------------------------------------------------------------------------------------
+  -- d. Query all films in the category 'Family'.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	film_id AS 'ID#', 
     title AS 'Film Title', 
@@ -230,7 +300,11 @@ WHERE film_id IN
 		WHERE name = 'Family'
 		)
 	);
+    
+ -- -------------------------------------------------------------------------------------------------------  
   -- e. Display the most frequently rented movies in descending order.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	I.film_id AS 'ID#', 
     title AS 'Film Title', 
@@ -243,7 +317,10 @@ LEFT JOIN film AS F
 GROUP BY film_id
 ORDER BY COUNT(film_id) DESC;
 
+ -- -------------------------------------------------------------------------------------------------------
   -- f. Write a query to display how much business, in dollars, each store brought in.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	store_id AS 'Store #', 
     SUM(amount) AS 'Store Revenue'
@@ -252,7 +329,10 @@ JOIN staff S
 	ON S.staff_id = P.staff_id
 GROUP BY store_id;
 
+ -- -------------------------------------------------------------------------------------------------------
   -- g. Write a query to display for each store its store ID, city, and country.
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	store_id AS 'ID#', 
     city AS 'City', 
@@ -265,7 +345,10 @@ INNER JOIN city C
 INNER JOIN country D
 USING(country_id); 
 
+ -- -------------------------------------------------------------------------------------------------------
   -- h. What are the top 5 genres in gross revenue (descending order). 
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT 
 	C.category_id AS 'ID#', 
     C.name AS 'Genre', 
@@ -283,9 +366,12 @@ GROUP BY category_id
 ORDER BY 'Genre Revenue' DESC
 LIMIT 5;
 
--- ----------------------------------
-### 8 ###______________________________________________________________________________________________________
+#__________________________________________________*-8-*__________________________________________________
+#___#8#____________________________________________________________________________________________________
+ -- -------------------------------------------------------------------------------------------------------
   -- a. Create view for top 5 genres in gross revenue (solution of 7h).
+ -- -------------------------------------------------------------------------------------------------------
+
 CREATE VIEW TopFiveGenres AS
 SELECT 
 	C.category_id AS 'ID#', 
@@ -303,9 +389,16 @@ JOIN category C
 GROUP BY category_id
 ORDER BY 'Genre Revenue' DESC
 LIMIT 5;
+
+ -- -------------------------------------------------------------------------------------------------------
   -- b. How would you display the view that you created in 8a?
--- Views can be queried like tables:
+  -- Views can be queried like tables:
+ -- -------------------------------------------------------------------------------------------------------
+
 SELECT * FROM TopFiveGenres; 
-  
+
+ -- ------------------------------------------------------------------------------------------------------- 
   -- c. You find that you no longer need the view `top_five_genres`. Write a query to delete it.
+ -- -------------------------------------------------------------------------------------------------------
+ 
 DROP VIEW IF EXISTS TopFiveGenres;
