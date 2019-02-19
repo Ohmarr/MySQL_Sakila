@@ -1,6 +1,6 @@
 <h1 align=center> Sakila Database Study </h1>
 
-![EER]('Sakila_Screenshot.jpg')
+![EER](Sakila_Screenshot.jpg)
 
 #### A basic study was conducted of the Sakila Database.  All queries were performed in `Sakila_Study.sql` and are summarize below.  <br>
 
