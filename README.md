@@ -1,12 +1,14 @@
 <h1 align=center> Sakila Database Study </h1>
 
-![EER](href='Sakila_Screenshot.jpg')
+![EER]('Sakila_Screenshot.jpg')
 
-### A basic study was conducted of the Sakila Database.  All queries were performed in `Sakila_Study.sql` and are summarize below.  
-#### An `Enhanced entity–relationship (EER) model` of the Sakila Database is included<br>
-#### The difference between dataypes TEXT and BLOB:
- ##### `TEXT`/`BLOB`: NOT stored in a table, but pointer to memory is mapped. <br>
- ##### `VARCHAR`: strings stored within a table in the database. <br>
+#### A basic study was conducted of the Sakila Database.  All queries were performed in `Sakila_Study.sql` and are summarize below.  <br>
+
+*A complete `Enhanced entity–relationship (EER) model` of the Sakila Database is included*<br>
+
+##### The difference between dataypes TEXT and BLOB:
+ ###### - `TEXT`/`BLOB`: NOT stored in a table, but pointer to memory is mapped. <br>
+ ###### - `VARCHAR`: strings stored within a table in the database. <br>
 
 <hr>
 
